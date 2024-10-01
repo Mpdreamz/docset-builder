@@ -1,19 +1,20 @@
+using Elastic.Markdown;
+using Elastic.Markdown.Commands;
 using Elastic.Markdown.DocSet;
+using Elastic.Markdown.Files;
 
-namespace Elastic.Markdown.Commands;
+namespace Documentation.Builder.Commands;
 
-public class MystSampleGenerator
+public class DocumentationGenerator
 {
-	public DirectoryInfo SourcePath { get; } = new (Path.Combine(Paths.Root.FullName, "docs/source"));
-	public DirectoryInfo OutputPath { get; } = new (Path.Combine(Paths.Root.FullName, ".artifacts/docs/html"));
+	private DirectoryInfo SourcePath { get; } = new (Path.Combine(Paths.Root.FullName, "docs/source"));
+	private DirectoryInfo OutputPath { get; } = new (Path.Combine(Paths.Root.FullName, ".artifacts/docs/html"));
+	private HtmlTemplateWriter HtmlWriter { get; }
+	private MarkdownConverter MarkdownConverter { get; } = new();
 
 	public DocumentationSet DocumentationSet { get; }
 
-	public HtmlTemplateWriter HtmlWriter { get; }
-
-	public MarkdownConverter MarkdownConverter { get; } = new();
-
-	public MystSampleGenerator(string? path, string? output)
+	public DocumentationGenerator(string? path, string? output)
 	{
 		SourcePath = path != null ? new DirectoryInfo(path) : SourcePath;
 		OutputPath = output != null ? new DirectoryInfo(output) : OutputPath;
@@ -24,7 +25,7 @@ public class MystSampleGenerator
 	public async Task ResolveDirectoryTree(CancellationToken ctx) =>
 		await DocumentationSet.Tree.Resolve(ctx);
 
-	public async Task ReloadNavigation(MarkdownFile current, CancellationToken ctx) =>
+	public async Task ReloadNavigationAsync(MarkdownFile current, CancellationToken ctx) =>
 		await HtmlWriter.ReloadNavigation(current, ctx);
 
 	public async Task Build(CancellationToken ctx)

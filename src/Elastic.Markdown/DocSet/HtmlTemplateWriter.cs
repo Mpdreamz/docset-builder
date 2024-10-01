@@ -1,4 +1,5 @@
 using Elastic.Markdown.DocSet;
+using Elastic.Markdown.Files;
 using Elastic.Markdown.Templating;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

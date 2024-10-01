@@ -1,3 +1,4 @@
+using Elastic.Markdown.Files;
 using Markdig.Helpers;
 
 namespace Elastic.Markdown.DocSet;
@@ -5,10 +6,11 @@ namespace Elastic.Markdown.DocSet;
 public class DocumentationGroup
 {
 	public MarkdownFile? Index { get; }
-	public MarkdownFile[] Files { get; }
-	public OrderedList<MarkdownFile> FilesInOrder { get; set; }
-	public DocumentationGroup[] Nested { get; }
-	public OrderedList<DocumentationGroup> GroupsInOrder { get; set; }
+	private MarkdownFile[] Files { get; }
+	private DocumentationGroup[] Nested { get; }
+
+	public OrderedList<MarkdownFile> FilesInOrder { get; private set; }
+	public OrderedList<DocumentationGroup> GroupsInOrder { get; private set; }
 	public int Level { get; }
 	public string? FolderName { get; }
 
@@ -102,61 +104,5 @@ public class DocumentationGroup
 		FilesInOrder = fileList;
 		GroupsInOrder = groupList;
 		_resolved = true;
-	}
-}
-
-public class DocumentationSet
-{
-	public string Name { get; }
-	public DirectoryInfo SourcePath { get; }
-	public DirectoryInfo OutputPath { get; }
-
-	private MarkdownConverter MarkdownConverter { get; }
-
-	public DocumentationSet(DirectoryInfo sourcePath, DirectoryInfo outputPath, MarkdownConverter markdownConverter)
-	{
-		Name = sourcePath.FullName;
-		SourcePath = sourcePath;
-		OutputPath = outputPath;
-		MarkdownConverter = markdownConverter;
-
-		Files = Directory.EnumerateFiles(SourcePath.FullName, "*.*", SearchOption.AllDirectories)
-			.Select(f => new FileInfo(f))
-			.Select<FileInfo, DocumentationFile>(file => file.Extension switch
-			{
-				".png" => new ImageFile(file, SourcePath, OutputPath),
-				".md" => new MarkdownFile(file, SourcePath, OutputPath)
-				{
-					MarkdownConverter = MarkdownConverter
-				},
-				_ => new StaticFile(file, SourcePath, OutputPath)
-			})
-			.ToList();
-
-		FlatMappedFiles = Files.ToDictionary(file => file.RelativePath, file => file);
-
-		var markdownFiles = Files.OfType<MarkdownFile>()
-			.Where(file => !file.RelativePath.StartsWith("_"))
-			.GroupBy(file =>
-			{
-				var path = file.ParentFolders.Count >= 1 ? file.ParentFolders[0] : file.FileName;
-				return path;
-			})
-			.ToDictionary(k => k.Key, v => v.ToArray());
-
-		//Tree = new DocumentationGroup([], 0, "");
-		Tree = new DocumentationGroup(markdownFiles, 0, "");
-	}
-
-	public DocumentationGroup Tree { get; }
-
-	public List<DocumentationFile> Files { get; }
-	public Dictionary<string, DocumentationFile> FlatMappedFiles { get; }
-
-	public void ClearOutputDirectory()
-	{
-		if (OutputPath.Exists)
-			OutputPath.Delete(true);
-		OutputPath.Create();
 	}
 }

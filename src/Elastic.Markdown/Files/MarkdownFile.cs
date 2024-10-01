@@ -1,36 +1,13 @@
-using System.Text;
+using Elastic.Markdown.DocSet;
 using Elastic.Markdown.Myst.Directives;
 using Elastic.Markdown.Templating;
 using Markdig;
-using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Helpers;
 using Markdig.Syntax;
-using Microsoft.AspNetCore.Routing.Constraints;
 using Slugify;
 
-namespace Elastic.Markdown.DocSet;
-
-public abstract class DocumentationFile
-{
-	public FileInfo SourceFile { get; }
-	public FileInfo OutputFile { get; }
-	public string RelativePath { get; }
-
-	public DocumentationFile(FileInfo sourceFile, DirectoryInfo sourcePath, DirectoryInfo outputPath)
-	{
-		SourceFile = sourceFile;
-		RelativePath = Path.GetRelativePath(sourcePath.FullName, sourceFile.FullName);
-		OutputFile  = new FileInfo(Path.Combine(outputPath.FullName, RelativePath.Replace(".md", ".html")));
-	}
-
-}
-
-public class ImageFile(FileInfo sourceFile, DirectoryInfo sourcePath, DirectoryInfo outputPath)
-	: DocumentationFile(sourceFile, sourcePath, outputPath);
-
-public class StaticFile(FileInfo sourceFile, DirectoryInfo sourcePath, DirectoryInfo outputPath)
-	: DocumentationFile(sourceFile, sourcePath, outputPath);
+namespace Elastic.Markdown.Files;
 
 public class MarkdownFile : DocumentationFile
 {
@@ -46,9 +23,7 @@ public class MarkdownFile : DocumentationFile
 
 	public required MarkdownConverter MarkdownConverter { get; init; }
 	private YamlFrontMatterConverter YamlFrontMatterConverter { get; } = new();
-
 	public string? Title { get; private set; }
-
 	public string? TocTitle
 	{
 		get => !string.IsNullOrEmpty(_tocTitle) ? _tocTitle : Title;

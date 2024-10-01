@@ -1,4 +1,4 @@
-namespace Elastic.Markdown;
+namespace Elastic.Markdown.Files;
 
 public static class Paths
 {
@@ -10,5 +10,5 @@ public static class Paths
 		return directory ?? new DirectoryInfo(Directory.GetCurrentDirectory());
 	}
 
-	public static DirectoryInfo Root = RootDirectoryInfo();
+	public static readonly DirectoryInfo Root = RootDirectoryInfo();
 }

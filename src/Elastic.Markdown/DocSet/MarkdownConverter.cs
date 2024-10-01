@@ -5,7 +5,7 @@ using Markdig.Syntax;
 
 namespace Elastic.Markdown.DocSet;
 
-public class MarkdownConverter()
+public class MarkdownConverter
 {
 	public MarkdownPipeline Pipeline =>
 		new MarkdownPipelineBuilder()

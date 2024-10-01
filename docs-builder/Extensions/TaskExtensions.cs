@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace Elastic.Markdown;
+namespace Documentation.Builder.Extensions;
 
 public static class TaskExtensions
 {

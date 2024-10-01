@@ -1,45 +1,22 @@
-using Elastic.Markdown.Commands;
-using Elastic.Markdown.DocSet;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Elastic.Markdown;
+namespace Documentation.Builder.Http;
 
-
-public class LiveDocumentationHolder(string? path, string? output)
-{
-	private string? Path { get; } = path;
-	private string? Output { get; } = output;
-
-	private MystSampleGenerator _generator = new(path, output);
-	public MystSampleGenerator Generator => _generator;
-
-	public async Task Reload(CancellationToken ctx)
-	{
-		var generator = new MystSampleGenerator(Path, Output);
-		await generator.ResolveDirectoryTree(ctx);
-		Interlocked.Exchange(ref _generator, generator);
-	}
-
-	public async Task ReloadNavigation(MarkdownFile current, CancellationToken ctx) =>
-		await Generator.ReloadNavigation(current, ctx);
-}
-
-public class LiveDocumentationService(LiveDocumentationHolder liveDocumentation, ILogger<LiveDocumentationHolder> logger) : IHostedService
+public class ReloadGeneratorService(ReloadableGeneratorState reloadableGenerator, ILogger<ReloadGeneratorService> logger) : IHostedService
 {
 	private FileSystemWatcher? _watcher;
-	private LiveDocumentationHolder LiveDocumentation { get; } = liveDocumentation;
-	public ILogger Logger { get; } = logger;
+	private ReloadableGeneratorState ReloadableGenerator { get; } = reloadableGenerator;
+	private ILogger Logger { get; } = logger;
 
 	//debounce reload requests due to many file changes
 	private readonly Debouncer _debouncer = new(TimeSpan.FromMilliseconds(200));
 
 	public async Task StartAsync(CancellationToken cancellationToken)
 	{
-		await LiveDocumentation.Reload(cancellationToken);
+		await ReloadableGenerator.ReloadAsync(cancellationToken);
 
-		var watcher = new FileSystemWatcher(LiveDocumentation.Generator.DocumentationSet.SourcePath.FullName);
+		var watcher = new FileSystemWatcher(ReloadableGenerator.Generator.DocumentationSet.SourcePath.FullName);
 
 		watcher.NotifyFilter = NotifyFilters.Attributes
 		                       | NotifyFilters.CreationTime
@@ -59,15 +36,13 @@ public class LiveDocumentationService(LiveDocumentationHolder liveDocumentation,
 		watcher.IncludeSubdirectories = true;
 		watcher.EnableRaisingEvents = true;
 		_watcher = watcher;
-
-		await Task.CompletedTask;
 	}
 
 	private void Reload() =>
 		_ = _debouncer.ExecuteAsync(async ctx =>
 		{
 			Logger.LogInformation("Reload due to changes!");
-			await LiveDocumentation.Reload(ctx);
+			await ReloadableGenerator.ReloadAsync(ctx);
 			Logger.LogInformation("Reload complete!");
 		}, default);
 
@@ -125,13 +100,11 @@ public class LiveDocumentationService(LiveDocumentationHolder liveDocumentation,
 		PrintException(ex.InnerException);
 	}
 
-	private class Debouncer
+	private class Debouncer(TimeSpan window)
 	{
 		private readonly SemaphoreSlim _semaphore = new(1, 1);
-		private readonly long _windowInTicks;
+		private readonly long _windowInTicks = window.Ticks;
 		private long _nextRun;
-
-		public Debouncer(TimeSpan window) => _windowInTicks = window.Ticks;
 
 		public async Task ExecuteAsync(Func<CancellationToken, Task> innerAction, CancellationToken cancellationToken)
 		{

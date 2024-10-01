@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using ConsoleAppFramework;
 
-namespace Elastic.Markdown;
+namespace Documentation.Builder;
 
 internal class CommandTimings(ConsoleAppFilter next) : ConsoleAppFilter(next)
 {
