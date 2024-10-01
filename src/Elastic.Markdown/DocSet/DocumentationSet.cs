@@ -1,6 +1,4 @@
 using Markdig.Helpers;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
 
 namespace Elastic.Markdown.DocSet;
 
@@ -85,6 +83,7 @@ public class DocumentationGroup
 			{
 				file.TocTitle = link.Title;
 				fileList.Add(file);
+				continue;
 			}
 
 			var group = Nested.FirstOrDefault(f => f.Index != null && f.Index.RelativePath.EndsWith(link.Link));
@@ -93,6 +92,10 @@ public class DocumentationGroup
 				groupList.Add(group);
 				if (group.Index != null && !string.IsNullOrEmpty(link.Title))
 					group.Index.TocTitle = link.Title;
+			}
+			else if (group == null || file == null)
+			{
+
 			}
 		}
 

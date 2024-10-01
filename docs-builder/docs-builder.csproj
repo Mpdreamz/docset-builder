@@ -4,12 +4,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>docs-builder</AssemblyName>
+    <RootNamespace>Elastic.DocsBuilder</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <PublishAot>true</PublishAot>
     <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
     <InterceptorsPreviewNamespaces>$(InterceptorsPreviewNamespaces);Microsoft.AspNetCore.Http.Generated</InterceptorsPreviewNamespaces>
-    
+
     <IsPublishable>true</IsPublishable>
     <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
@@ -20,12 +23,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Markdig" Version="0.37.0"/>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="RazorSlices" Version="0.8.1" />
-    <PackageReference Include="Slugify.Core" Version="4.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0"/>
+    <PackageReference Include="RazorSlices" Version="0.8.1"/>
+    <PackageReference Include="Slugify.Core" Version="4.0.1"/>
     <PackageReference Include="Utf8StreamReader" Version="1.3.2"/>
-    <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" Version="16.1.3" />
-    <PackageReference Include="YamlDotNet" Version="16.1.3" />
+    <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" Version="16.1.3"/>
+    <PackageReference Include="YamlDotNet" Version="16.1.3"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,7 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Slices\Admonition\Admonition.cshtml" />
+    <UpToDateCheckInput Remove="Slices\Admonition\Admonition.cshtml"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\src\Elastic.Markdown\Elastic.Markdown.csproj" />
+  </ItemGroup>
 </Project>
