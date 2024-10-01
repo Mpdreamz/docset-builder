@@ -13,7 +13,7 @@ public class ReloadableGeneratorState(DirectoryInfo? sourcePath, DirectoryInfo? 
 	private DocumentationGenerator _generator = new(new DocumentationSet(sourcePath, outputPath));
 	public DocumentationGenerator Generator => _generator;
 
-	public async Task ReloadAsync(CancellationToken ctx)
+	public async Task ReloadAsync(Cancel ctx)
 	{
 		SourcePath?.Refresh();
 		OutputPath?.Refresh();

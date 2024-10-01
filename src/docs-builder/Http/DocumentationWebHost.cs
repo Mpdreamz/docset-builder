@@ -25,7 +25,7 @@ public class DocumentationWebHost
 		SetUpRoutes();
 	}
 
-	public async Task RunAsync(CancellationToken ctx) => await _webApplication.RunAsync(ctx);
+	public async Task RunAsync(Cancel ctx) => await _webApplication.RunAsync(ctx);
 
 	private void SetUpRoutes()
 	{
@@ -36,14 +36,14 @@ public class DocumentationWebHost
 		});
 		_webApplication.UseRouting();
 
-		_webApplication.MapGet("/", async (ReloadableGeneratorState holder, CancellationToken ctx) =>
+		_webApplication.MapGet("/", async (ReloadableGeneratorState holder, Cancel ctx) =>
 			await ServeDocumentationFile(holder, "index.md", ctx));
 
-		_webApplication.MapGet("{**slug}", async (string slug, ReloadableGeneratorState holder, CancellationToken ctx) =>
+		_webApplication.MapGet("{**slug}", async (string slug, ReloadableGeneratorState holder, Cancel ctx) =>
 			await ServeDocumentationFile(holder, slug, ctx));
 	}
 
-	private static async Task<IResult> ServeDocumentationFile(ReloadableGeneratorState holder, string slug, CancellationToken ctx)
+	private static async Task<IResult> ServeDocumentationFile(ReloadableGeneratorState holder, string slug, Cancel ctx)
 	{
 		var generator = holder.Generator;
 		slug = slug.Replace(".html", ".md");

@@ -5,13 +5,13 @@ namespace Documentation.Builder;
 
 internal class CommandTimings(ConsoleAppFilter next) : ConsoleAppFilter(next)
 {
-	public override async Task InvokeAsync(ConsoleAppContext context, CancellationToken cancellationToken)
+	public override async Task InvokeAsync(ConsoleAppContext context, Cancel ctx)
 	{
 		Console.WriteLine($":: {context.CommandName} :: Starting");
 		var sw = Stopwatch.StartNew();
 		try
 		{
-			await Next.InvokeAsync(context, cancellationToken);
+			await Next.InvokeAsync(context, ctx);
 		}
 		finally
 		{

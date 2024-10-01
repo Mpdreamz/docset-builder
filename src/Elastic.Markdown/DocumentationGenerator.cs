@@ -23,13 +23,13 @@ public class DocumentationGenerator
 		return new DocumentationGenerator(docSet);
 	}
 
-	public async Task ResolveDirectoryTree(CancellationToken ctx) =>
+	public async Task ResolveDirectoryTree(Cancel ctx) =>
 		await DocumentationSet.Tree.Resolve(ctx);
 
-	public async Task ReloadNavigationAsync(MarkdownFile current, CancellationToken ctx) =>
+	public async Task ReloadNavigationAsync(MarkdownFile current, Cancel ctx) =>
 		await HtmlWriter.ReloadNavigation(current, ctx);
 
-	public async Task GenerateAll(CancellationToken ctx)
+	public async Task GenerateAll(Cancel ctx)
 	{
 		DocumentationSet.ClearOutputDirectory();
 
@@ -58,7 +58,7 @@ public class DocumentationGenerator
 		});
 	}
 
-	public async Task<string?> RenderLayout(MarkdownFile markdown, CancellationToken ctx)
+	public async Task<string?> RenderLayout(MarkdownFile markdown, Cancel ctx)
 	{
 		await DocumentationSet.Tree.Resolve(ctx);
 		return await HtmlWriter.RenderLayout(markdown, ctx);
