@@ -3,9 +3,9 @@ using Elastic.Markdown.Myst.Directives;
 using Markdig;
 using Markdig.Syntax;
 
-namespace Elastic.Markdown.DocSet;
+namespace Elastic.Markdown.Parsers;
 
-public class MarkdownConverter
+public class MarkdownParser
 {
 	public MarkdownPipeline Pipeline =>
 		new MarkdownPipelineBuilder()

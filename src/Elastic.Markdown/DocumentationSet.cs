@@ -1,5 +1,5 @@
-using Elastic.Markdown.DocSet;
 using Elastic.Markdown.Files;
+using Elastic.Markdown.Parsers;
 
 namespace Elastic.Markdown;
 
@@ -7,9 +7,9 @@ public class DocumentationSet
 {
 	public string Name { get; }
 	public DirectoryInfo SourcePath { get; }
-	public DirectoryInfo OutputPath { get; }
+	private DirectoryInfo OutputPath { get; }
 
-	public DocumentationSet(DirectoryInfo sourcePath, DirectoryInfo outputPath, MarkdownConverter markdownConverter)
+	public DocumentationSet(DirectoryInfo sourcePath, DirectoryInfo outputPath, MarkdownParser parser)
 	{
 		Name = sourcePath.FullName;
 		SourcePath = sourcePath;
@@ -19,12 +19,9 @@ public class DocumentationSet
 			.Select(f => new FileInfo(f))
 			.Select<FileInfo, DocumentationFile>(file => file.Extension switch
 			{
-				".png" => new ImageFile(file, SourcePath, OutputPath),
-				".md" => new MarkdownFile(file, SourcePath, OutputPath)
-				{
-					MarkdownConverter = markdownConverter
-				},
-				_ => new StaticFile(file, SourcePath, OutputPath)
+				".png" => new ImageFile(file, SourcePath),
+				".md" => new MarkdownFile(file, SourcePath, parser),
+				_ => new StaticFile(file, SourcePath)
 			})
 			.ToList();
 
@@ -39,12 +36,13 @@ public class DocumentationSet
 			})
 			.ToDictionary(k => k.Key, v => v.ToArray());
 
-		Tree = new DocumentationGroup(markdownFiles, 0, "");
+		Tree = new DocumentationFolder(markdownFiles, 0, "");
 	}
 
-	public DocumentationGroup Tree { get; }
+	public DocumentationFolder Tree { get; }
 
 	public List<DocumentationFile> Files { get; }
+
 	public Dictionary<string, DocumentationFile> FlatMappedFiles { get; }
 
 	public void ClearOutputDirectory()

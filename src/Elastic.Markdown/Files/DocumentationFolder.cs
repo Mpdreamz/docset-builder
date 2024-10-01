@@ -1,20 +1,19 @@
-using Elastic.Markdown.Files;
 using Markdig.Helpers;
 
-namespace Elastic.Markdown.DocSet;
+namespace Elastic.Markdown.Files;
 
-public class DocumentationGroup
+public class DocumentationFolder
 {
 	public MarkdownFile? Index { get; }
 	private MarkdownFile[] Files { get; }
-	private DocumentationGroup[] Nested { get; }
+	private DocumentationFolder[] Nested { get; }
 
 	public OrderedList<MarkdownFile> FilesInOrder { get; private set; }
-	public OrderedList<DocumentationGroup> GroupsInOrder { get; private set; }
+	public OrderedList<DocumentationFolder> GroupsInOrder { get; private set; }
 	public int Level { get; }
 	public string? FolderName { get; }
 
-	public DocumentationGroup(Dictionary<string, MarkdownFile[]> markdownFiles, int level, string folderName)
+	public DocumentationFolder(Dictionary<string, MarkdownFile[]> markdownFiles, int level, string folderName)
 	{
 		Level = level;
 		FolderName = folderName;
@@ -34,7 +33,7 @@ public class DocumentationGroup
 		Index = files.FirstOrDefault(f => f.FileName == "index.md");
 
 		var newLevel = level + 1;
-		var groups = new List<DocumentationGroup>();
+		var groups = new List<DocumentationFolder>();
 		foreach (var kv in markdownFiles.Where(kv=> !kv.Key.EndsWith(".md")))
 		{
 			var folder = kv.Key;
@@ -48,12 +47,12 @@ public class DocumentationGroup
 					return path;
 				})
 				.ToDictionary(k => k.Key, v => v.ToArray());
-			var documentationGroup  = new DocumentationGroup(mapped, newLevel, folder);
+			var documentationGroup  = new DocumentationFolder(mapped, newLevel, folder);
 			groups.Add(documentationGroup);
 
 		}
 		Nested = groups.ToArray();
-		GroupsInOrder = new OrderedList<DocumentationGroup>(Nested);
+		GroupsInOrder = new OrderedList<DocumentationFolder>(Nested);
 	}
 
 	public bool HoldsCurrent(MarkdownFile current) =>
@@ -76,7 +75,7 @@ public class DocumentationGroup
 
 		var tree = Index.TocTree;
 		var fileList = new OrderedList<MarkdownFile>();
-		var groupList = new OrderedList<DocumentationGroup>();
+		var groupList = new OrderedList<DocumentationFolder>();
 
 		foreach (var link in tree)
 		{

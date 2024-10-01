@@ -1,5 +1,5 @@
-using Elastic.Markdown.DocSet;
 using Elastic.Markdown.Myst.Directives;
+using Elastic.Markdown.Parsers;
 using Elastic.Markdown.Slices;
 using Markdig;
 using Markdig.Extensions.Yaml;
@@ -14,15 +14,16 @@ public class MarkdownFile : DocumentationFile
 	private readonly SlugHelper _slugHelper = new();
 	private string? _tocTitle;
 
-	public MarkdownFile(FileInfo sourceFile, DirectoryInfo sourcePath, DirectoryInfo outputPath)
-		: base(sourceFile, sourcePath, outputPath)
+	public MarkdownFile(FileInfo sourceFile, DirectoryInfo sourcePath, MarkdownParser parser)
+		: base(sourceFile, sourcePath)
 	{
 		ParentFolders = RelativePath.Split(Path.DirectorySeparatorChar).SkipLast(1).ToArray();
 		FileName = sourceFile.Name;
+		MarkdownParser = parser;
 	}
 
-	public required MarkdownConverter MarkdownConverter { get; init; }
-	private YamlFrontMatterConverter YamlFrontMatterConverter { get; } = new();
+	public MarkdownParser MarkdownParser { get; }
+	private FrontMatterParser FrontMatterParser { get; } = new();
 	public string? Title { get; private set; }
 	public string? TocTitle
 	{
@@ -37,11 +38,11 @@ public class MarkdownFile : DocumentationFile
 
 	public async Task ParseAsync(CancellationToken ctx)
 	{
-		var document = await MarkdownConverter.ParseAsync(SourceFile, ctx);
+		var document = await MarkdownParser.ParseAsync(SourceFile, ctx);
 		if (document.FirstOrDefault() is YamlFrontMatterBlock yaml)
 		{
 			var raw = string.Join(Environment.NewLine, yaml.Lines.Lines);
-			var frontMatter = YamlFrontMatterConverter.Deserialize(raw);
+			var frontMatter = FrontMatterParser.Deserialize(raw);
 			Title = frontMatter.Title;
 		}
 
@@ -68,7 +69,7 @@ public class MarkdownFile : DocumentationFile
 
 	public async Task<string> CreateHtmlAsync(CancellationToken ctx)
 	{
-		var document = await MarkdownConverter.ParseAsync(SourceFile, ctx);
-		return document.ToHtml(MarkdownConverter.Pipeline);
+		var document = await MarkdownParser.ParseAsync(SourceFile, ctx);
+		return document.ToHtml(MarkdownParser.Pipeline);
 	}
 }

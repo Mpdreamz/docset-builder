@@ -1,5 +1,3 @@
-using Elastic.Markdown;
-using Elastic.Markdown.DocSet;
 using Elastic.Markdown.Files;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

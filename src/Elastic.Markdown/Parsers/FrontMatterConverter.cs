@@ -1,7 +1,7 @@
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace Elastic.Markdown.DocSet;
+namespace Elastic.Markdown.Parsers;
 
 [YamlStaticContext]
 public partial class YamlFrontMatterStaticContext;
@@ -12,7 +12,7 @@ public class YamlFrontMatter
 	public string? Title { get; set; }
 }
 
-public class YamlFrontMatterConverter
+public class FrontMatterParser
 {
 	public YamlFrontMatter Deserialize(string yaml)
 	{

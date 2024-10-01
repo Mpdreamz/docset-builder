@@ -1,15 +1,13 @@
-using Elastic.Markdown.DocSet;
 using Elastic.Markdown.Files;
-using Elastic.Markdown.Slices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RazorSlices;
 
-namespace Elastic.Markdown.Commands;
+namespace Elastic.Markdown.Slices;
 
-public class HtmlTemplateWriter
+public class HtmlWriter
 {
-	public HtmlTemplateWriter(DocumentationSet documentationSet)
+	public HtmlWriter(DocumentationSet documentationSet)
 	{
 		var services = new ServiceCollection();
 		services.AddLogging();
@@ -28,7 +26,7 @@ public class HtmlTemplateWriter
 	private async Task<string> RenderNavigation(MarkdownFile markdown, CancellationToken ctx = default)
 	{
 		if (_navigation is { Length: > 0 }) return _navigation;
-		var slice = Slices.Layout._TocTree.Create(new NavigationModel
+		var slice = Layout._TocTree.Create(new NavigationModel
 		{
 			Tree = DocumentationSet.Tree,
 			CurrentDocument = markdown
@@ -48,7 +46,7 @@ public class HtmlTemplateWriter
 		var html = await markdown.CreateHtmlAsync(ctx);
 		await DocumentationSet.Tree.Resolve(ctx);
 		var navigationHtml = await RenderNavigation(markdown, ctx);
-		var slice = Slices.Index.Create(new IndexModel
+		var slice = Index.Create(new IndexModel
 		{
 			Title = markdown.Title ?? "[TITLE NOT SET]",
 			MarkdownHtml = html,
