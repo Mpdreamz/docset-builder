@@ -1,6 +1,6 @@
 using Elastic.Markdown.DocSet;
 using Elastic.Markdown.Myst.Directives;
-using Elastic.Markdown.Templating;
+using Elastic.Markdown.Slices;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Helpers;

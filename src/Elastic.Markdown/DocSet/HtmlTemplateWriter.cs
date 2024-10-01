@@ -1,6 +1,6 @@
 using Elastic.Markdown.DocSet;
 using Elastic.Markdown.Files;
-using Elastic.Markdown.Templating;
+using Elastic.Markdown.Slices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RazorSlices;
@@ -48,7 +48,7 @@ public class HtmlTemplateWriter
 		var html = await markdown.CreateHtmlAsync(ctx);
 		await DocumentationSet.Tree.Resolve(ctx);
 		var navigationHtml = await RenderNavigation(markdown, ctx);
-		var slice = Slices.Index.Create(new MarkdownPageModel
+		var slice = Slices.Index.Create(new IndexModel
 		{
 			Title = markdown.Title ?? "[TITLE NOT SET]",
 			MarkdownHtml = html,
