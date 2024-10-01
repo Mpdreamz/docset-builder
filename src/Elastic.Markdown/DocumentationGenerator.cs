@@ -1,25 +1,26 @@
-using Elastic.Markdown;
-using Elastic.Markdown.Parsers;
 using Elastic.Markdown.Files;
 using Elastic.Markdown.Slices;
 
-namespace Documentation.Builder.Commands;
+namespace Elastic.Markdown;
 
 public class DocumentationGenerator
 {
-	private DirectoryInfo SourcePath { get; } = new (Path.Combine(Paths.Root.FullName, "docs/source"));
-	private DirectoryInfo OutputPath { get; } = new (Path.Combine(Paths.Root.FullName, ".artifacts/docs/html"));
 	private HtmlWriter HtmlWriter { get; }
-	private MarkdownParser MarkdownParser { get; } = new();
 
 	public DocumentationSet DocumentationSet { get; }
 
-	public DocumentationGenerator(string? path, string? output)
+	public DocumentationGenerator(DocumentationSet docSet)
 	{
-		SourcePath = path != null ? new DirectoryInfo(path) : SourcePath;
-		OutputPath = output != null ? new DirectoryInfo(output) : OutputPath;
-		DocumentationSet = new DocumentationSet(SourcePath, OutputPath, MarkdownParser);
+		DocumentationSet = docSet;
 		HtmlWriter = new HtmlWriter(DocumentationSet);
+	}
+
+	public static DocumentationGenerator Create(string? path, string? output)
+	{
+		var sourcePath = path != null ? new DirectoryInfo(path) : null;
+		var outputPath = output != null ? new DirectoryInfo(output) : null;
+		var docSet = new DocumentationSet(sourcePath, outputPath);
+		return new DocumentationGenerator(docSet);
 	}
 
 	public async Task ResolveDirectoryTree(CancellationToken ctx) =>
@@ -28,7 +29,7 @@ public class DocumentationGenerator
 	public async Task ReloadNavigationAsync(MarkdownFile current, CancellationToken ctx) =>
 		await HtmlWriter.ReloadNavigation(current, ctx);
 
-	public async Task Build(CancellationToken ctx)
+	public async Task GenerateAll(CancellationToken ctx)
 	{
 		DocumentationSet.ClearOutputDirectory();
 
@@ -40,7 +41,7 @@ public class DocumentationGenerator
 		await Parallel.ForEachAsync(DocumentationSet.Files, ctx, async (file, token) =>
 		{
 			var item = Interlocked.Increment(ref handledItems);
-			var outputFile = file.OutputFile(OutputPath);
+			var outputFile = file.OutputFile(DocumentationSet.OutputPath);
 			if (file is MarkdownFile markdown)
 			{
 				await markdown.ParseAsync(token);

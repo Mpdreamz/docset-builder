@@ -2,7 +2,6 @@
 // This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
-using Elastic.Markdown.Parsers;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
@@ -43,9 +42,7 @@ public class DirectiveMarkdownExtension : IMarkdownExtension
 			inlineParser.TryCreateEmphasisInlineList.Add((emphasisChar, delimiterCount) =>
 			{
 				if (delimiterCount == 2 && emphasisChar == ':')
-				{
 					return new Role();
-				}
 
 				return null;
 			});

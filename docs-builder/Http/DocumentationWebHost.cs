@@ -17,7 +17,8 @@ public class DocumentationWebHost
 	public DocumentationWebHost(string? path, string[] args)
 	{
 		var builder = WebApplication.CreateSlimBuilder(args);
-		builder.Services.AddSingleton<ReloadableGeneratorState>(_ => new ReloadableGeneratorState(path, null));
+		var sourcePath = path != null ? new DirectoryInfo(path) : null;
+		builder.Services.AddSingleton<ReloadableGeneratorState>(_ => new ReloadableGeneratorState(sourcePath, null));
 		builder.Services.AddHostedService<ReloadGeneratorService>();
 
 		_webApplication = builder.Build();

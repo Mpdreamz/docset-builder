@@ -3,7 +3,7 @@ using Elastic.Markdown.Myst.Directives;
 using Markdig;
 using Markdig.Syntax;
 
-namespace Elastic.Markdown.Parsers;
+namespace Elastic.Markdown.Myst;
 
 public class MarkdownParser
 {

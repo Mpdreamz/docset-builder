@@ -10,7 +10,7 @@ using RazorSlices;
 namespace Elastic.Markdown.Myst.Directives;
 
 /// <summary>
-/// A HTML renderer for a <see cref="DirectiveBlock"/>.
+/// An HTML renderer for a <see cref="DirectiveBlock"/>.
 /// </summary>
 /// <seealso cref="HtmlObjectRenderer{CustomContainer}" />
 public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>

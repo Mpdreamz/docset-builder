@@ -1,7 +1,7 @@
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace Elastic.Markdown.Parsers;
+namespace Elastic.Markdown.Myst;
 
 [YamlStaticContext]
 public partial class YamlFrontMatterStaticContext;

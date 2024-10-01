@@ -1,26 +1,27 @@
-using Elastic.Markdown.Files;
-using Elastic.Markdown.Parsers;
+using Elastic.Markdown.Myst;
 
-namespace Elastic.Markdown;
+namespace Elastic.Markdown.Files;
 
 public class DocumentationSet
 {
 	public string Name { get; }
-	public DirectoryInfo SourcePath { get; }
-	private DirectoryInfo OutputPath { get; }
+	public DirectoryInfo SourcePath { get; } = new (Path.Combine(Paths.Root.FullName, "docs/source"));
+	public DirectoryInfo OutputPath { get; } = new (Path.Combine(Paths.Root.FullName, ".artifacts/docs/html"));
 
-	public DocumentationSet(DirectoryInfo sourcePath, DirectoryInfo outputPath, MarkdownParser parser)
+	private MarkdownParser MarkdownParser { get; } = new();
+
+	public DocumentationSet(DirectoryInfo? sourcePath, DirectoryInfo? outputPath)
 	{
-		Name = sourcePath.FullName;
-		SourcePath = sourcePath;
-		OutputPath = outputPath;
+		SourcePath = sourcePath ?? SourcePath;
+		OutputPath = outputPath ?? OutputPath;
+		Name = SourcePath.FullName;
 
 		Files = Directory.EnumerateFiles(SourcePath.FullName, "*.*", SearchOption.AllDirectories)
 			.Select(f => new FileInfo(f))
 			.Select<FileInfo, DocumentationFile>(file => file.Extension switch
 			{
 				".png" => new ImageFile(file, SourcePath),
-				".md" => new MarkdownFile(file, SourcePath, parser),
+				".md" => new MarkdownFile(file, SourcePath, MarkdownParser),
 				_ => new StaticFile(file, SourcePath)
 			})
 			.ToList();

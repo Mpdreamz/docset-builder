@@ -3,7 +3,7 @@ using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Slugify;
 
-namespace Elastic.Markdown.Parsers;
+namespace Elastic.Markdown.Myst;
 
 public class SectionedHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
 {
