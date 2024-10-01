@@ -26,7 +26,7 @@ public class HtmlWriter
 	private async Task<string> RenderNavigation(MarkdownFile markdown, CancellationToken ctx = default)
 	{
 		if (_navigation is { Length: > 0 }) return _navigation;
-		var slice = Layout._TocTree.Create(new NavigationModel
+		var slice = Layout._TocTree.Create(new NavigationViewModel
 		{
 			Tree = DocumentationSet.Tree,
 			CurrentDocument = markdown
@@ -46,7 +46,7 @@ public class HtmlWriter
 		var html = await markdown.CreateHtmlAsync(ctx);
 		await DocumentationSet.Tree.Resolve(ctx);
 		var navigationHtml = await RenderNavigation(markdown, ctx);
-		var slice = Index.Create(new IndexModel
+		var slice = Index.Create(new IndexViewModel
 		{
 			Title = markdown.Title ?? "[TITLE NOT SET]",
 			MarkdownHtml = html,

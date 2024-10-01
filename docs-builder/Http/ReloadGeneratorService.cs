@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Documentation.Builder.Http;
 
-public class ReloadGeneratorService(ReloadableGeneratorState reloadableGenerator, ILogger<ReloadGeneratorService> logger) : IHostedService
+public class ReloadGeneratorService(
+	ReloadableGeneratorState reloadableGenerator,
+	ILogger<ReloadGeneratorService> logger) : IHostedService
 {
 	private FileSystemWatcher? _watcher;
 	private ReloadableGeneratorState ReloadableGenerator { get; } = reloadableGenerator;
@@ -85,7 +87,6 @@ public class ReloadGeneratorService(ReloadableGeneratorState reloadableGenerator
 		Logger.LogInformation($"    New: {e.FullPath}");
 		if (e.FullPath.EndsWith(".md"))
 			Reload();
-
 	}
 
 	private void OnError(object sender, ErrorEventArgs e) =>
