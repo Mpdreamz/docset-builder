@@ -14,9 +14,9 @@ public class DocumentationWebHost
 	private readonly string _staticFilesDirectory =
 		Path.Combine(Paths.Root.FullName, "docs", "source", "_static_template");
 
-	public DocumentationWebHost(string? path, string[] args)
+	public DocumentationWebHost(string? path)
 	{
-		var builder = WebApplication.CreateSlimBuilder(args);
+		var builder = WebApplication.CreateSlimBuilder();
 		var sourcePath = path != null ? new DirectoryInfo(path) : null;
 		builder.Services.AddSingleton<ReloadableGeneratorState>(_ => new ReloadableGeneratorState(sourcePath, null));
 		builder.Services.AddHostedService<ReloadGeneratorService>();
