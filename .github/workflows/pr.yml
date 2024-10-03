@@ -17,6 +17,13 @@ env:
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
 
 jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build documentation
+        uses: Mpdreamz/docs-builder@main
+  
   build:
     runs-on: ubuntu-latest
     steps:
