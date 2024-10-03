@@ -1,25 +1,26 @@
 using System.Diagnostics;
 using ConsoleAppFramework;
 
-namespace Documentation.Builder;
+namespace Documentation.Builder.Cli;
 
-internal class CommandTimings(ConsoleAppFilter next) : ConsoleAppFilter(next)
+internal class StopwatchFilter(ConsoleAppFilter next) : ConsoleAppFilter(next)
 {
 	public override async Task InvokeAsync(ConsoleAppContext context, Cancel ctx)
 	{
 		var isHelpOrVersion = context.Arguments.Any(a => a is "--help" or "-h" or "--version");
+		var name = string.IsNullOrWhiteSpace(context.CommandName) ? "generate" : context.CommandName;
+		var startTime = Stopwatch.GetTimestamp();
 		if (!isHelpOrVersion)
-			Console.WriteLine($":: {context.CommandName} :: Starting");
-		var sw = Stopwatch.StartNew();
+			ConsoleApp.Log($"{name} :: Starting...");
 		try
 		{
 			await Next.InvokeAsync(context, ctx);
 		}
 		finally
 		{
-			sw.Stop();
+			var endTime = Stopwatch.GetElapsedTime(startTime);
 			if (!isHelpOrVersion)
-				Console.WriteLine($":: {context.CommandName} :: Finished in '{sw.Elapsed}");
+				ConsoleApp.Log($"{name} :: Finished in '{endTime}");
 		}
 	}
 }

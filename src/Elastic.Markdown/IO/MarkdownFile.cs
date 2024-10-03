@@ -7,7 +7,7 @@ using Markdig.Helpers;
 using Markdig.Syntax;
 using Slugify;
 
-namespace Elastic.Markdown.Files;
+namespace Elastic.Markdown.IO;
 
 public class MarkdownFile : DocumentationFile
 {

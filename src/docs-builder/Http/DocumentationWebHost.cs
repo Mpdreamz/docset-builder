@@ -1,9 +1,10 @@
-using Elastic.Markdown.Files;
+using Elastic.Markdown.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Documentation.Builder.Http;
 
@@ -14,12 +15,13 @@ public class DocumentationWebHost
 	private readonly string _staticFilesDirectory =
 		Path.Combine(Paths.Root.FullName, "docs", "source", "_static_template");
 
-	public DocumentationWebHost(string? path)
+	public DocumentationWebHost(string? path, ILoggerFactory logger)
 	{
 		var builder = WebApplication.CreateSlimBuilder();
 		var sourcePath = path != null ? new DirectoryInfo(path) : null;
-		builder.Services.AddSingleton<ReloadableGeneratorState>(_ => new ReloadableGeneratorState(sourcePath, null));
+		builder.Services.AddSingleton<ReloadableGeneratorState>(_ => new ReloadableGeneratorState(sourcePath, null, logger));
 		builder.Services.AddHostedService<ReloadGeneratorService>();
+		builder.Services.AddSingleton(logger);
 
 		_webApplication = builder.Build();
 		SetUpRoutes();

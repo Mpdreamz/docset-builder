@@ -1,6 +1,6 @@
 using Markdig.Helpers;
 
-namespace Elastic.Markdown.Files;
+namespace Elastic.Markdown.IO;
 
 public class DocumentationFolder
 {

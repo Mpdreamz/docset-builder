@@ -1,4 +1,4 @@
-using Elastic.Markdown.Files;
+using Elastic.Markdown.IO;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RazorSlices;

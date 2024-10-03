@@ -1,42 +1,29 @@
 using ConsoleAppFramework;
-using Documentation.Builder;
-using Documentation.Builder.Http;
-using Elastic.Markdown;
+using Documentation.Builder.Cli;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+var services = new ServiceCollection();
+services.AddLogging(x =>
+{
+	x.ClearProviders();
+	x.SetMinimumLevel(LogLevel.Information);
+	x.AddSimpleConsole(c =>
+	{
+		c.SingleLine = true;
+		c.IncludeScopes = true;
+		c.UseUtcTimestamp = true;
+		c.TimestampFormat = "[yyyy-MM-ddTHH:mm:ss] ";
+	});
+});
+
+await using var serviceProvider = services.BuildServiceProvider();
+var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+ConsoleApp.ServiceProvider = serviceProvider;
+ConsoleApp.Log = msg => logger.LogInformation(msg);
+ConsoleApp.LogError = msg => logger.LogError(msg);
 
 var app = ConsoleApp.Create();
-app.UseFilter<CommandTimings>();
-app.UseFilter<CatchExceptionFilter>();
-
-app.Add("", Commands.Generate);
-app.Add("generate", Commands.Generate);
-app.Add("serve", Commands.Serve);
+app.Add<Commands>();
 
 await app.RunAsync(args);
-
-
-internal static class Commands
-{
-	/// <summary>
-	///
-	/// </summary>
-	/// <param name="path"></param>
-	/// <param name="ctx"></param>
-	public static async Task Serve(string? path = null, Cancel ctx = default)
-	{
-		var host = new DocumentationWebHost(path);
-		await host.RunAsync(ctx);
-	}
-
-
-	/// <summary>
-	/// Converts a source markdown folder or file to an output folder
-	/// </summary>
-	/// <param name="path"> -p, Defaults to the`{pwd}/docs` folder</param>
-	/// <param name="output"> -o, Defaults to `.artifacts/html` </param>
-	/// <param name="ctx"></param>
-	public static async Task Generate(string? path = null, string? output = null, Cancel ctx = default)
-	{
-		var generator = DocumentationGenerator.Create(path, output);
-		await generator.GenerateAll(ctx);
-	}
-}
