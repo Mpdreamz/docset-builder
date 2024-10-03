@@ -20,4 +20,12 @@ app.Add("validate-licenses", (Cancel _) =>
 	Proc.Exec("dotnet", ["dotnet-project-licenses", ..args]);
 });
 
+app.Add("publish", async (Cancel _) =>
+{
+	var source = "src/docs-builder/docs-builder.csproj";
+	await $"""
+		dotnet publish {source} -c Release -o .artifacts/publish \
+			--self-contained true /p:PublishTrimmed=true /p:PublishSingleFile=false /p:PublishAot=true
+		""";
+});
 await app.RunAsync(args);
