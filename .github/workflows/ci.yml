@@ -26,5 +26,8 @@ jobs:
         id: bootstrap
         uses: ./.github/actions/bootstrap
         
-      - name: Build
+      - name: build
         run: ./build.sh
+        
+      - name: validate licenses
+        run: ./build.sh validate-licenses
