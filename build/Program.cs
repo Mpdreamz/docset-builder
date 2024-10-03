@@ -1,7 +1,11 @@
 using ConsoleAppFramework;
-using ProcNet;
+using Zx;
+using static Zx.Env;
 
-// ReSharper disable RedundantLambdaParameterType
+var app = ConsoleApp.Create();
+app.Add("", async (Cancel _) =>
+{
+	await "dotnet build -c Release --verbosity minimal";
+});
 
-ConsoleApp.Run(args, () => Proc.Exec("dotnet", "--help"));
-
+await ConsoleApp.RunAsync(args);
