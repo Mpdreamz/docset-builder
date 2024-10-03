@@ -8,4 +8,4 @@ app.Add("", async (Cancel _) =>
 	await "dotnet build -c Release --verbosity minimal";
 });
 
-await ConsoleApp.RunAsync(args);
+await app.RunAsync(args);
