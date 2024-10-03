@@ -4,7 +4,7 @@ title: Elastic Docs v3
 
 Elastic Docs v3 is built with
 
-TODO ADD README for docset-builder
+TODO ADD README for doc-builder
 
 :::{tip}
 On the right side of every page, there is an `Edit this page` link that you can use to see the markdown source for that page.
