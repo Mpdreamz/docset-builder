@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using Elastic.Markdown.Myst;
 using Elastic.Markdown.Myst.Directives;
 using Elastic.Markdown.Slices;
@@ -14,7 +15,7 @@ public class MarkdownFile : DocumentationFile
 	private readonly SlugHelper _slugHelper = new();
 	private string? _tocTitle;
 
-	public MarkdownFile(FileInfo sourceFile, DirectoryInfo sourcePath, MarkdownParser parser)
+	public MarkdownFile(FileInfo sourceFile, IDirectoryInfo sourcePath, MarkdownParser parser)
 		: base(sourceFile, sourcePath)
 	{
 		ParentFolders = RelativePath.Split(Path.DirectorySeparatorChar).SkipLast(1).ToArray();

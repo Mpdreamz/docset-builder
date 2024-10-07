@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using Elastic.Markdown.Myst;
 
 namespace Elastic.Markdown.IO;
@@ -5,18 +6,18 @@ namespace Elastic.Markdown.IO;
 public class DocumentationSet
 {
 	public string Name { get; }
-	public DirectoryInfo SourcePath { get; } = new (Path.Combine(Paths.Root.FullName, "docs/source"));
-	public DirectoryInfo OutputPath { get; } = new (Path.Combine(Paths.Root.FullName, ".artifacts/docs/html"));
+	public IDirectoryInfo SourcePath { get; }
+	public IDirectoryInfo OutputPath { get; }
 
 	private MarkdownParser MarkdownParser { get; } = new();
 
-	public DocumentationSet(DirectoryInfo? sourcePath, DirectoryInfo? outputPath)
+	public DocumentationSet(IDirectoryInfo? sourcePath, IDirectoryInfo? outputPath, IFileSystem fileSystem)
 	{
-		SourcePath = sourcePath ?? SourcePath;
-		OutputPath = outputPath ?? OutputPath;
+		SourcePath = sourcePath ?? fileSystem.DirectoryInfo.New(Path.Combine(Paths.Root.FullName, "docs/source"));
+		OutputPath = outputPath ?? fileSystem.DirectoryInfo.New(Path.Combine(Paths.Root.FullName, ".artifacts/docs/html"));
 		Name = SourcePath.FullName;
 
-		Files = Directory.EnumerateFiles(SourcePath.FullName, "*.*", SearchOption.AllDirectories)
+		Files = fileSystem.Directory.EnumerateFiles(SourcePath.FullName, "*.*", SearchOption.AllDirectories)
 			.Select(f => new FileInfo(f))
 			.Select<FileInfo, DocumentationFile>(file => file.Extension switch
 			{
