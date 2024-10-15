@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Elastic.Markdown.Tests;
 
-public class UnitTest1
+public class OutputDirectoryTests
 {
 	[Fact]
 	public async Task Test1()

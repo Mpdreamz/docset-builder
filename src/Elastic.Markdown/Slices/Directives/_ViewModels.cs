@@ -4,7 +4,7 @@ public class AdmonitionViewModel
 {
 	public required string Title { get; init; }
 	public required string Directive { get; init; }
-	public required string? Id { get; init; }
+	public required string? CrossReferenceName { get; init; }
 	public required string? Classes { get; init; }
 }
 
@@ -12,7 +12,7 @@ public class CodeViewModel
 {
 	public required string? Caption { get; init; }
 	public required string Language { get; init; }
-	public required string? Id { get; init; }
+	public required string? CrossReferenceName { get; init; }
 }
 
 public class VersionViewModel

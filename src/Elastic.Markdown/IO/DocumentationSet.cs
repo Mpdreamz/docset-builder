@@ -18,8 +18,8 @@ public class DocumentationSet
 		Name = SourcePath.FullName;
 
 		Files = fileSystem.Directory.EnumerateFiles(SourcePath.FullName, "*.*", SearchOption.AllDirectories)
-			.Select(f => new FileInfo(f))
-			.Select<FileInfo, DocumentationFile>(file => file.Extension switch
+			.Select(f => fileSystem.FileInfo.New(f))
+			.Select<IFileInfo, DocumentationFile>(file => file.Extension switch
 			{
 				".png" => new ImageFile(file, SourcePath),
 				".md" => new MarkdownFile(file, SourcePath, MarkdownParser),
