@@ -3,12 +3,13 @@ using Elastic.Markdown.IO;
 using Elastic.Markdown.Myst;
 using Elastic.Markdown.Myst.Directives;
 using FluentAssertions;
+using JetBrains.Annotations;
 using Markdig.Syntax;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Elastic.Markdown.Tests.Directives;
 
-public abstract class DirectiveTest<TDirective>(string content) : DirectiveTest(content)
+public abstract class DirectiveTest<TDirective>([LanguageInjection("markdown")]string content) : DirectiveTest(content)
 	where TDirective : DirectiveBlock
 {
 	protected TDirective? Block { get; private set; }
@@ -32,7 +33,7 @@ public abstract class DirectiveTest : IAsyncLifetime
 	protected string Html { get; private set; }
 	protected MarkdownDocument Document { get; private set; }
 
-	public DirectiveTest(string content)
+	protected DirectiveTest([LanguageInjection("markdown")]string content)
 	{
 		var logger = NullLoggerFactory.Instance;
 		var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>

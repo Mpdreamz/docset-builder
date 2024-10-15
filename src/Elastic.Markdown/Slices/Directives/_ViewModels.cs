@@ -1,3 +1,6 @@
+using System.Text;
+using Elastic.Markdown.Myst.Directives;
+
 namespace Elastic.Markdown.Slices.Directives;
 
 public class AdmonitionViewModel
@@ -6,6 +9,7 @@ public class AdmonitionViewModel
 	public required string Directive { get; init; }
 	public required string? CrossReferenceName { get; init; }
 	public required string? Classes { get; init; }
+	public required string? Open { get; init; }
 }
 
 public class CodeViewModel
@@ -40,15 +44,35 @@ public class CardViewModel
 
 public class GridViewModel
 {
-	public required int BreakPointXs { get; init; }
-	public required int BreakPointSm { get; init; }
-	public required int BreakPointMd { get; init; }
-	public required int BreakPointLg { get; init; }
-
+	public required GridResponsive BreakPoint { get; init; }
 }
 
 public class GridItemCardViewModel
 {
 	public required string? Title { get; init; }
 	public required string? Link { get; init; }
+}
+
+public class ImageViewModel
+{
+	public required string? CrossReferenceName { get; init; }
+	public required string? Classes { get; init; }
+	public required string? Align { get; init; }
+	public required string? Alt { get; init; }
+	public required string? Height { get; init; }
+	public required string? Scale { get; init; }
+	public required string? Target { get; init; }
+	public required string? Width { get; init; }
+	public required string? ImageUrl { get; init; }
+
+	public string Style
+	{
+		get
+		{
+			var sb = new StringBuilder();
+			if (Height != null) sb.Append($"height: {Height};");
+			if (Width != null) sb.Append($"width: {Width};");
+			return sb.ToString();
+		}
+	}
 }

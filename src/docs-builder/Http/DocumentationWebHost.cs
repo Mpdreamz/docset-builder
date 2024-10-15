@@ -63,7 +63,7 @@ public class DocumentationWebHost
 				return Results.Content(rendered, "text/html");
 			}
 			case ImageFile image:
-				return Results.File(image.SourceFile.FullName, "image/png");
+				return Results.File(image.SourceFile.FullName, image.MimeType);
 			default:
 				return Results.NotFound();
 		}

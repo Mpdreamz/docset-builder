@@ -4,7 +4,6 @@ using FluentAssertions;
 namespace Elastic.Markdown.Tests.Directives;
 
 public class TabTests() : DirectiveTest<TabSetBlock>(
-// language=markdown
 """
 `````{tab-set}
 
@@ -53,7 +52,6 @@ Frank Herbert  |Dune           |604            |1965-06-01T00:00:00.000Z
 }
 
 public class MultipleTabTests() : DirectiveTest<TabSetBlock>(
-// language=markdown
 """
 `````{tab-set}
 ````{tab-item} Admonition

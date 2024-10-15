@@ -4,8 +4,9 @@ public class AdmonitionBlock(DirectiveBlockParser blockParser, string admonition
 	: DirectiveBlock(blockParser, properties)
 {
 	public string Admonition => admonition == "admonition" ? Classes ?? "note" : admonition;
-	public string? Classes { get; private set; }
+	public string? Classes { get; protected set; }
 	public string? CrossReferenceName  { get; private set; }
+	public bool? DropdownOpen  { get; private set; }
 
 	public string Title
 	{
@@ -13,7 +14,7 @@ public class AdmonitionBlock(DirectiveBlockParser blockParser, string admonition
 		{
 			var t = Admonition == "seealso" ? "see also" : Admonition;
 			var title = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(t);
-			if (admonition == "admonition" && !string.IsNullOrEmpty(Arguments))
+			if (admonition is "admonition" && !string.IsNullOrEmpty(Arguments))
 				title = Arguments;
 			else if (!string.IsNullOrEmpty(Arguments))
 				title += $" {Arguments}";
@@ -25,5 +26,18 @@ public class AdmonitionBlock(DirectiveBlockParser blockParser, string admonition
 	{
 		Classes = Properties.GetValueOrDefault("class");
 		CrossReferenceName = Properties.GetValueOrDefault("name");
+		ParseBool("open", b => DropdownOpen = b);
+	}
+}
+
+
+public class DropdownBlock(DirectiveBlockParser blockParser, Dictionary<string, string> properties)
+	: AdmonitionBlock(blockParser, "admonition", properties)
+{
+	// ReSharper disable once RedundantOverriddenMember
+	public override void FinalizeAndValidate()
+	{
+		base.FinalizeAndValidate();
+		Classes = $"dropdown {Classes}";
 	}
 }

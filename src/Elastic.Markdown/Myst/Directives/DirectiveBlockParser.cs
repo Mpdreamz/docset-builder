@@ -51,6 +51,24 @@ public class DirectiveBlockParser : FencedBlockParserBase<DirectiveBlock>
 	    if (info.IndexOf("{tab-item}") > 0)
 		    return new TabItemBlock(this, _admonitionData);
 
+	    if (info.IndexOf("{sidebar}") > 0)
+		    return new SideBarBlock(this, _admonitionData);
+
+	    if (info.IndexOf("{card}") > 0)
+		    return new CardBlock(this, _admonitionData);
+
+	    if (info.IndexOf("{grid}") > 0)
+		    return new GridBlock(this, _admonitionData);
+
+	    if (info.IndexOf("{grid-item-card}") > 0)
+		    return new GridItemCardBlock(this, _admonitionData);
+
+	    if (info.IndexOf("{dropdown}") > 0)
+		    return new DropdownBlock(this, _admonitionData);
+
+	    if (info.IndexOf("{image}") > 0)
+		    return new ImageBlock(this, _admonitionData);
+
 	    foreach (var admonition in _admonitions)
 	    {
 		    if (info.IndexOf($"{{{admonition}}}") > 0)
@@ -108,7 +126,7 @@ public class DirectiveBlockParser : FencedBlockParserBase<DirectiveBlock>
 				return base.TryContinue(processor, block);
 
 		    var name = tokens[0];
-		    var data = tokens.Length > 1 ? tokens[1] : string.Empty;
+		    var data = tokens.Length > 1 ? string.Join(":", tokens[1..]) : string.Empty;
 		    _admonitionData[name] = data;
 		    return BlockState.Continue;
 	    }

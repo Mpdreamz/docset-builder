@@ -24,6 +24,12 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 
 		switch (directiveBlock)
 		{
+			case ImageBlock imageBlock:
+				WriteImage(renderer, imageBlock);
+				return;
+			case DropdownBlock dropdownBlock:
+				WriteDropdown(renderer, dropdownBlock);
+				return;
 			case AdmonitionBlock admonitionBlock:
 				WriteAdmonition(renderer, admonitionBlock);
 				return;
@@ -45,6 +51,9 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 			case CardBlock card:
 				WriteCard(renderer, card);
 				return;
+			case GridBlock grid:
+				WriteGrid(renderer, grid);
+				return;
 			case GridItemCardBlock gridItemCard:
 				WriteGridItemCard(renderer, gridItemCard);
 				return;
@@ -59,37 +68,39 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 		}
 	}
 
+	private void WriteImage(HtmlRenderer renderer, ImageBlock block)
+	{
+		var slice = Image.Create(new ImageViewModel
+		{
+			Classes = block.Classes,
+			CrossReferenceName = block.CrossReferenceName,
+			Align = block.Align,
+			Alt = block.Alt,
+			Height = block.Height,
+			Scale = block.Scale,
+			Target = block.Target,
+			Width = block.Width,
+			ImageUrl = block.ImageUrl,
+		});
+		RenderRazorSlice(slice, renderer, block);
+	}
+
 	private void WriteChildren(HtmlRenderer renderer, DirectiveBlock directiveBlock) =>
 		renderer.WriteChildren(directiveBlock);
 
-	private void WriteCard(HtmlRenderer renderer, CardBlock directiveBlock)
+	private void WriteCard(HtmlRenderer renderer, CardBlock block)
 	{
-		var title = directiveBlock.Arguments;
-		var link = directiveBlock.Properties.GetValueOrDefault("link");
-		var slice = Card.Create(new CardViewModel { Title = title, Link = link });
-		RenderRazorSlice(slice, renderer, directiveBlock, implicitParagraph: false);
+		var slice = Card.Create(new CardViewModel { Title = block.Title, Link = block.Link });
+		RenderRazorSlice(slice, renderer, block, implicitParagraph: false);
 	}
 
-	private void WriteGrid(HtmlRenderer renderer, GridBlock directiveBlock)
+	private void WriteGrid(HtmlRenderer renderer, GridBlock block)
 	{
-		//todo we always assume 4 integers
-		var columns = directiveBlock.Arguments?.Split(' ')
-			.Select(t => int.TryParse(t, out var c) ? c : 0).ToArray() ?? [];
-		// 1 1 2 3
-		int xs = 1, sm = 1, md = 2, lg = 3;
-		if (columns.Length >= 4)
-		{
-			xs = columns[0];
-			sm = columns[1];
-			md = columns[2];
-			lg = columns[3];
-		}
-
 		var slice = Grid.Create(new GridViewModel
 		{
-			BreakPointLg = lg, BreakPointMd = md, BreakPointSm = sm, BreakPointXs = xs
+			BreakPoint = block.BreakPoint
 		});
-		RenderRazorSlice(slice, renderer, directiveBlock);
+		RenderRazorSlice(slice, renderer, block);
 	}
 
 	private void WriteGridItemCard(HtmlRenderer renderer, GridItemCardBlock directiveBlock)
@@ -117,7 +128,21 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 			Directive = block.Admonition,
 			CrossReferenceName = block.CrossReferenceName,
 			Classes = block.Classes,
-			Title = block.Title
+			Title = block.Title,
+			Open = block.DropdownOpen.GetValueOrDefault() ? "open" : null
+		});
+		RenderRazorSlice(slice, renderer, block);
+	}
+
+	private void WriteDropdown(HtmlRenderer renderer, DropdownBlock block)
+	{
+		var slice = Dropdown.Create(new AdmonitionViewModel
+		{
+			Directive = block.Admonition,
+			CrossReferenceName = block.CrossReferenceName,
+			Classes = block.Classes,
+			Title = block.Title,
+			Open = block.DropdownOpen.GetValueOrDefault() ? "open" : null
 		});
 		RenderRazorSlice(slice, renderer, block);
 	}
@@ -138,13 +163,10 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 		RenderRazorSlice(slice, renderer, directiveBlock);
 	}
 
-	private int _seenTabSets;
-
 	private void WriteTabSet(HtmlRenderer renderer, TabSetBlock block)
 	{
 		var slice = TabSet.Create(new TabSetViewModel());
 		RenderRazorSlice(slice, renderer, block);
-		_seenTabSets++;
 	}
 
 	private void WriteTabItem(HtmlRenderer renderer, TabItemBlock block)

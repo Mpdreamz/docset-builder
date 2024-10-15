@@ -64,4 +64,19 @@ public abstract class DirectiveBlock : ContainerBlock, IFencedBlock
     /// Allows blocks to finalize setting properties once fully parsed
     /// </summary>
     public abstract void FinalizeAndValidate();
+
+	protected void ParseBool(string key, Action<bool> setter)
+	{
+		var value = Properties.GetValueOrDefault(key);
+		if (string.IsNullOrEmpty(value))
+		{
+			setter(Properties.ContainsKey(key));
+			return;
+		}
+
+		if (bool.TryParse(value, out var result))
+			setter(result);
+		//todo invalidate
+	}
+
 }

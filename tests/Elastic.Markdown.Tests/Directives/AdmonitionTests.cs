@@ -4,7 +4,6 @@ using FluentAssertions;
 namespace Elastic.Markdown.Tests.Directives;
 
 public abstract class AdmonitionTests(string directive) : DirectiveTest<AdmonitionBlock>(
-// language=markdown
 $$"""
 ```{{{directive}}}
 This is an attention block
@@ -67,7 +66,6 @@ public class TipTests() : AdmonitionTests("tip")
 }
 
 public class NoteTitleTests() : DirectiveTest<AdmonitionBlock>(
-// language=markdown
 """
 ```{note} This is my custom note
 This is an attention block
@@ -84,7 +82,6 @@ A regular paragraph.
 }
 
 public class AdmonitionTitleTests() : DirectiveTest<AdmonitionBlock>(
-// language=markdown
 """
 ```{admonition} This is my custom note
 This is an attention block
@@ -100,4 +97,24 @@ A regular paragraph.
 	public void SetsCustomTitle() => Block!.Title.Should().Be("This is my custom note");
 }
 
+
+public class DropdownTitleTests() : DirectiveTest<AdmonitionBlock>(
+"""
+```{dropdown} This is my custom dropdown
+:open:
+This is an attention block
+```
+A regular paragraph.
+"""
+)
+{
+	[Fact]
+	public void SetsCorrectAdmonitionType() => Block!.Admonition.Should().Be("note");
+
+	[Fact]
+	public void SetsCustomTitle() => Block!.Title.Should().Be("This is my custom dropdown");
+
+	[Fact]
+	public void SetsDropdownOpen() => Block!.DropdownOpen.Should().BeTrue();
+}
 

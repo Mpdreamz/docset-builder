@@ -3,12 +3,11 @@ using FluentAssertions;
 namespace Elastic.Markdown.Tests.Directives;
 
 public class YamlFrontMatterTests() : DirectiveTest(
-	// language=markdown
-	"""
-	---
-	title: Elastic Docs v3
-	---
-	"""
+"""
+---
+title: Elastic Docs v3
+---
+"""
 )
 {
 	[Fact]

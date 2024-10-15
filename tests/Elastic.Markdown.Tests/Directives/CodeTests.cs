@@ -4,7 +4,6 @@ using FluentAssertions;
 namespace Elastic.Markdown.Tests.Directives;
 
 public abstract class CodeBlockTests(string directive, string? language = null) : DirectiveTest<CodeBlock>(
-// language=markdown
 $$"""
 ```{{directive}} {{language}}
 var x = 1;

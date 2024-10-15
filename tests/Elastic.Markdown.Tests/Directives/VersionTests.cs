@@ -4,7 +4,6 @@ using FluentAssertions;
 namespace Elastic.Markdown.Tests.Directives;
 
 public abstract class VersionTests(string directive) : DirectiveTest<VersionBlock>(
-// language=markdown
 $$"""
 ```{{{directive}}}
 Version brief summary

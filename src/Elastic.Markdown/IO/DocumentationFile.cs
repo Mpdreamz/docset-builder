@@ -11,8 +11,11 @@ public abstract class DocumentationFile(IFileInfo sourceFile, IDirectoryInfo roo
 		new(Path.Combine(outputPath.FullName, RelativePath.Replace(".md", ".html")));
 }
 
-public class ImageFile(IFileInfo sourceFile, IDirectoryInfo rootPath)
-	: DocumentationFile(sourceFile, rootPath);
+public class ImageFile(IFileInfo sourceFile, IDirectoryInfo rootPath, string mimeType = "image/png")
+	: DocumentationFile(sourceFile, rootPath)
+{
+	public string MimeType { get; } = mimeType;
+}
 
 public class StaticFile(IFileInfo sourceFile, IDirectoryInfo rootPath)
 	: DocumentationFile(sourceFile, rootPath);

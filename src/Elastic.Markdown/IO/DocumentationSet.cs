@@ -21,6 +21,7 @@ public class DocumentationSet
 			.Select(f => fileSystem.FileInfo.New(f))
 			.Select<IFileInfo, DocumentationFile>(file => file.Extension switch
 			{
+				".svg" => new ImageFile(file, SourcePath, "image/svg+xml"),
 				".png" => new ImageFile(file, SourcePath),
 				".md" => new MarkdownFile(file, SourcePath, MarkdownParser),
 				_ => new StaticFile(file, SourcePath)
