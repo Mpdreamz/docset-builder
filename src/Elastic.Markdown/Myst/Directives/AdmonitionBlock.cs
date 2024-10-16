@@ -3,7 +3,7 @@ namespace Elastic.Markdown.Myst.Directives;
 public class AdmonitionBlock(DirectiveBlockParser blockParser, string admonition, Dictionary<string, string> properties)
 	: DirectiveBlock(blockParser, properties)
 {
-	public string Admonition => admonition == "admonition" ? Classes ?? "note" : admonition;
+	public string Admonition => admonition == "admonition" ? Classes?.Trim() ?? "note" : admonition;
 	public string? Classes { get; protected set; }
 	public string? CrossReferenceName  { get; private set; }
 	public bool? DropdownOpen  { get; private set; }

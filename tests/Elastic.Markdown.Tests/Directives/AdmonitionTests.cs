@@ -109,7 +109,7 @@ A regular paragraph.
 )
 {
 	[Fact]
-	public void SetsCorrectAdmonitionType() => Block!.Admonition.Should().Be("note");
+	public void SetsCorrectAdmonitionType() => Block!.Admonition.Should().Be("dropdown");
 
 	[Fact]
 	public void SetsCustomTitle() => Block!.Title.Should().Be("This is my custom dropdown");

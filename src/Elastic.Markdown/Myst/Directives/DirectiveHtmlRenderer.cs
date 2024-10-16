@@ -3,6 +3,7 @@
 // See the license.txt file in the project root for more information.
 
 using Elastic.Markdown.Slices.Directives;
+using Markdig.Extensions.Figures;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using RazorSlices;
@@ -24,6 +25,9 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 
 		switch (directiveBlock)
 		{
+			case FigureBlock imageBlock:
+				WriteFigure(renderer, imageBlock);
+				return;
 			case ImageBlock imageBlock:
 				WriteImage(renderer, imageBlock);
 				return;
@@ -71,6 +75,23 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 	private void WriteImage(HtmlRenderer renderer, ImageBlock block)
 	{
 		var slice = Image.Create(new ImageViewModel
+		{
+			Classes = block.Classes,
+			CrossReferenceName = block.CrossReferenceName,
+			Align = block.Align,
+			Alt = block.Alt,
+			Height = block.Height,
+			Scale = block.Scale,
+			Target = block.Target,
+			Width = block.Width,
+			ImageUrl = block.ImageUrl,
+		});
+		RenderRazorSlice(slice, renderer, block);
+	}
+
+	private void WriteFigure(HtmlRenderer renderer, ImageBlock block)
+	{
+		var slice = Slices.Directives.Figure.Create(new ImageViewModel
 		{
 			Classes = block.Classes,
 			CrossReferenceName = block.CrossReferenceName,

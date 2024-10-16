@@ -23,4 +23,8 @@
       <ProjectReference Include="..\..\src\Elastic.Markdown\Elastic.Markdown.csproj" />
     </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="Xunit"/>
+  </ItemGroup>
+
 </Project>

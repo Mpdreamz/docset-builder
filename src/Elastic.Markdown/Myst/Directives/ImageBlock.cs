@@ -66,3 +66,7 @@ public class ImageBlock(DirectiveBlockParser blockParser, Dictionary<string, str
 		Target = Properties.GetValueOrDefault("target");
 	}
 }
+
+
+public class FigureBlock(DirectiveBlockParser blockParser, Dictionary<string, string> properties)
+	: ImageBlock(blockParser, properties);

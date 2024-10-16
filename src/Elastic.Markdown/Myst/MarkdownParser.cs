@@ -11,6 +11,7 @@ public class MarkdownParser
 	public MarkdownPipeline Pipeline =>
 		new MarkdownPipelineBuilder()
 			.EnableTrackTrivia()
+			.UseGenericAttributes()
 			.UseYamlFrontMatter()
 			.UseGridTables()
 			.UsePipeTables()
