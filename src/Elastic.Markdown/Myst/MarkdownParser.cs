@@ -2,6 +2,7 @@ using System.IO.Abstractions;
 using Cysharp.IO;
 using Elastic.Markdown.Myst.Directives;
 using Markdig;
+using Markdig.Extensions.EmphasisExtras;
 using Markdig.Syntax;
 
 namespace Elastic.Markdown.Myst;
@@ -12,7 +13,9 @@ public class MarkdownParser
 		new MarkdownPipelineBuilder()
 			.EnableTrackTrivia()
 			.UseGenericAttributes()
+			.UseEmphasisExtras(EmphasisExtraOptions.Default)
 			.UseSoftlineBreakAsHardlineBreak()
+			.UseComments()
 			.UseYamlFrontMatter()
 			.UseGridTables()
 			.UsePipeTables()
