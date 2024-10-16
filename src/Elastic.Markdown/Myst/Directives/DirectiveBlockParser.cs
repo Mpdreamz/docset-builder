@@ -75,6 +75,9 @@ public class DirectiveBlockParser : FencedBlockParserBase<DirectiveBlock>
 	    if (info.IndexOf("{figure-md}") > 0)
 		    return new FigureBlock(this, _admonitionData);
 
+	    if (info.IndexOf("{mermaid}") > 0)
+		    return new MermaidBlock(this, _admonitionData);
+
 	    foreach (var admonition in _admonitions)
 	    {
 		    if (info.IndexOf($"{{{admonition}}}") > 0)

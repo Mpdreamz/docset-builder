@@ -6,7 +6,10 @@ using Elastic.Markdown.Slices.Directives;
 using Markdig.Extensions.Figures;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using RazorSlices;
+using YamlDotNet.Serialization.EventEmitters;
 
 namespace Elastic.Markdown.Myst.Directives;
 
@@ -25,6 +28,9 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 
 		switch (directiveBlock)
 		{
+			case MermaidBlock mermaidBlock:
+				WriteMermaid(renderer, mermaidBlock);
+				return;
 			case FigureBlock imageBlock:
 				WriteFigure(renderer, imageBlock);
 				return;
@@ -112,7 +118,7 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 	private void WriteCard(HtmlRenderer renderer, CardBlock block)
 	{
 		var slice = Card.Create(new CardViewModel { Title = block.Title, Link = block.Link });
-		RenderRazorSlice(slice, renderer, block, implicitParagraph: false);
+		RenderRazorSlice(slice, renderer, block);
 	}
 
 	private void WriteGrid(HtmlRenderer renderer, GridBlock block)
@@ -190,19 +196,49 @@ public class DirectiveHtmlRenderer : HtmlObjectRenderer<DirectiveBlock>
 		RenderRazorSlice(slice, renderer, block);
 	}
 
+	private void WriteMermaid(HtmlRenderer renderer, MermaidBlock block)
+	{
+		var slice = Mermaid.Create(new MermaidViewModel());
+		RenderRazorSliceRawContent(slice, renderer, block);
+	}
+
 	private void WriteTabItem(HtmlRenderer renderer, TabItemBlock block)
 	{
 		var slice = TabItem.Create(new TabItemViewModel { Index = block.Index, Title = block.Title, TabSetIndex = block.TabSetIndex });
 		RenderRazorSlice(slice, renderer, block);
 	}
 
-	private static void RenderRazorSlice<T>(
-		RazorSlice<T> slice, HtmlRenderer renderer, DirectiveBlock obj, bool implicitParagraph = true)
+	private static void RenderRazorSlice<T>(RazorSlice<T> slice, HtmlRenderer renderer, DirectiveBlock obj)
 	{
 		var html = slice.RenderAsync().GetAwaiter().GetResult();
 		var blocks = html.Split("[CONTENT]", 2, StringSplitOptions.RemoveEmptyEntries);
 		renderer.Write(blocks[0]);
 		renderer.WriteChildren(obj);
+		renderer.Write(blocks[1]);
+	}
+
+	private static void RenderRazorSliceRawContent<T>(RazorSlice<T> slice, HtmlRenderer renderer, DirectiveBlock obj)
+	{
+		var html = slice.RenderAsync().GetAwaiter().GetResult();
+		var blocks = html.Split("[CONTENT]", 2, StringSplitOptions.RemoveEmptyEntries);
+		renderer.Write(blocks[0]);
+		foreach (var o in obj)
+		{
+			if (o is ParagraphBlock p)
+			{
+				renderer.WriteLeafRawLines(p, true, false, false);
+				renderer.EnableHtmlForInline = false;
+				foreach (var oo in p.Inline ?? [])
+				{
+					if (oo is LiteralInline li)
+						renderer.Write(li);
+					if (oo is LineBreakInline)
+						renderer.WriteLine();
+				}
+				renderer.EnableHtmlForInline = true;
+			}
+		}
+
 		renderer.Write(blocks[1]);
 	}
 }

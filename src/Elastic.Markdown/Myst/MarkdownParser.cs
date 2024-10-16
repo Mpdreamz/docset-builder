@@ -12,6 +12,7 @@ public class MarkdownParser
 		new MarkdownPipelineBuilder()
 			.EnableTrackTrivia()
 			.UseGenericAttributes()
+			.UseSoftlineBreakAsHardlineBreak()
 			.UseYamlFrontMatter()
 			.UseGridTables()
 			.UsePipeTables()

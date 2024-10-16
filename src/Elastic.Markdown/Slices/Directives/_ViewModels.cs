@@ -76,3 +76,5 @@ public class ImageViewModel
 		}
 	}
 }
+
+public class MermaidViewModel;

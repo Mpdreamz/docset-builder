@@ -13,7 +13,7 @@ public class InlineImageTest() : InlineTest<LinkInline>(
 	public void ParsesBlock() => Block.Should().NotBeNull();
 
 	[Fact]
-	public void ParsesBreakPoint() =>
+	public void GeneratesAttributesInHtml() =>
 		// language=html
 		Html.Should().Contain(
 			"""<p><img src="/_static/img/observability.png" w="350px" align="center" alt="Elasticsearch" /></p>"""
