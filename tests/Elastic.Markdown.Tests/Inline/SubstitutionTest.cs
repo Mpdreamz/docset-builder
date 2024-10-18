@@ -51,10 +51,10 @@ not a {substitution}
 			.And.NotContain(
 				"""{{hello-world}}"""
 			)
-			.And.Contain(
+			.And.NotContain( // treated as attributes to the block
 				"""{substitution}"""
 			)
 			.And.Contain(
-				"""{valid-key}"""
+				"""{{valid-key}}"""
 			);
 }

@@ -1,9 +1,8 @@
-using Elastic.Markdown.Myst.Comments;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
 
-namespace Elastic.Markdown.Myst;
+namespace Elastic.Markdown.Myst.Comments;
 
 public static class CommentBuilderExtensions
 {
@@ -12,17 +11,6 @@ public static class CommentBuilderExtensions
 		pipeline.Extensions.AddIfNotAlready<CommentMarkdownExtension>();
 		return pipeline;
 	}
-
-	/// <summary>
-	/// Modifies the built in generic attributes parser to only apply to block elements.
-	/// </summary>
-	/// <param name="pipeline"></param>
-	/// <returns></returns>
-    public static MarkdownPipelineBuilder UseBlockGenericAttributes(this MarkdownPipelineBuilder pipeline)
-    {
-        pipeline.Extensions.AddIfNotAlready<BlockGenericAttributesExtension>();
-        return pipeline;
-    }
 }
 
 public class CommentMarkdownExtension : IMarkdownExtension

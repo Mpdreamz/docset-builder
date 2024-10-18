@@ -1,5 +1,6 @@
 using System.IO.Abstractions;
 using Cysharp.IO;
+using Elastic.Markdown.Myst.Comments;
 using Elastic.Markdown.Myst.Directives;
 using Elastic.Markdown.Myst.Substitution;
 using Markdig;
@@ -13,7 +14,7 @@ public class MarkdownParser
 	public MarkdownPipeline Pipeline =>
 		new MarkdownPipelineBuilder()
 			.EnableTrackTrivia()
-			.UseBlockGenericAttributes()
+			.UseGenericAttributes()
 			.UseEmphasisExtras(EmphasisExtraOptions.Default)
 			.UseSoftlineBreakAsHardlineBreak()
 			.UseSubstitution()
