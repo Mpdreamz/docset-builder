@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using Cysharp.IO;
 using Elastic.Markdown.Myst.Directives;
+using Elastic.Markdown.Myst.Substitution;
 using Markdig;
 using Markdig.Extensions.EmphasisExtras;
 using Markdig.Syntax;
@@ -12,9 +13,10 @@ public class MarkdownParser
 	public MarkdownPipeline Pipeline =>
 		new MarkdownPipelineBuilder()
 			.EnableTrackTrivia()
-			.UseGenericAttributes()
+			.UseBlockGenericAttributes()
 			.UseEmphasisExtras(EmphasisExtraOptions.Default)
 			.UseSoftlineBreakAsHardlineBreak()
+			.UseSubstitution()
 			.UseComments()
 			.UseYamlFrontMatter()
 			.UseGridTables()
@@ -22,9 +24,27 @@ public class MarkdownParser
 			.UseDirectives()
 			.Build();
 
-	public async Task<MarkdownDocument> ParseAsync(IFileInfo path, Cancel ctx)
+
+	// TODO only scan for yaml front matter and toc information
+	public Task<MarkdownDocument> QuickParseAsync(IFileInfo path, Cancel ctx)
 	{
 		var context = new MarkdownParserContext();
+		return ParseAsync(path, context, ctx);
+	}
+
+	public Task<MarkdownDocument> ParseAsync(IFileInfo path, YamlFrontMatter? matter, Cancel ctx)
+	{
+		var context = new MarkdownParserContext();
+		if (matter?.Properties is { } props)
+		{
+			foreach (var (key, value) in props)
+				context.Properties[key] = value;
+		}
+		return ParseAsync(path, context, ctx);
+	}
+
+	private async Task<MarkdownDocument> ParseAsync(IFileInfo path, MarkdownParserContext context, Cancel ctx)
+	{
 		if (path.FileSystem is FileSystem)
 		{
 			//real IO optimize through UTF8 stream reader.
@@ -39,7 +59,5 @@ public class MarkdownParser
 			var markdownDocument = Markdig.Markdown.Parse(inputMarkdown, Pipeline, context);
 			return markdownDocument;
 		}
-
-
 	}
 }
