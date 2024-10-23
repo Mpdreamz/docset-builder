@@ -8,6 +8,7 @@ var arguments = Arguments.Filter(args);
 var services = new ServiceCollection();
 services.AddLogging(x =>
 {
+	
 	x.ClearProviders();
 	x.SetMinimumLevel(LogLevel.Information);
 	x.AddSimpleConsole(c =>
