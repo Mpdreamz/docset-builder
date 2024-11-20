@@ -16,6 +16,7 @@ var services = new ServiceCollection();
 services.AddGitHubActionsCore();
 services.AddLogging(x =>
 {
+	
 	x.ClearProviders();
 	x.SetMinimumLevel(LogLevel.Information);
 	x.AddSimpleConsole(c =>
